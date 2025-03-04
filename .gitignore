@@ -1,0 +1,6 @@
+/target
+/.idea/.gitignore
+/.idea/bitquery-kafka-solana.iml
+/.idea/modules.xml
+/.idea/vcs.xml
+/Cargo.lock

@@ -7,7 +7,6 @@ This repository provides a Rust implementation for consuming Solana blockchain d
 ```
 /bitquery-kafka-solana
 ├── solana/                  # Protobuf definition files
-│   ├── bigtable_block.proto
 │   ├── block_message.proto
 │   ├── dex_block_message.proto
 │   ├── parsed_idl_block_message.proto

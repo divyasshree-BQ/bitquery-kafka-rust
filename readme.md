@@ -81,7 +81,6 @@ Token RAY price in USDC (via SOL bridging): 0.32
 ## Customization
 
 - Change the subscription topics in the `topics` array
-- Modify the price calculation logic in `calculate_trade_price`
 - Implement additional bridging logic for other tokens
 - Add support for other Bitquery streaming events
 

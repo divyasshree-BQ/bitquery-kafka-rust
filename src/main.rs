@@ -1,4 +1,5 @@
 mod protos;
+
 use rdkafka::config::ClientConfig;
 use rdkafka::consumer::{CommitMode, Consumer, StreamConsumer};
 use rdkafka::message::Message;
@@ -6,8 +7,20 @@ use rdkafka::error::KafkaResult;
 use tokio::time::{timeout, Duration};
 use prost::Message as ProstMessage;
 use crate::protos::dex_block_message::DexParsedBlockMessage;
-
 use bs58;
+use config::Config;
+use serde::Deserialize;
+
+#[derive(Debug, Deserialize)]
+struct AuthConfig {
+    username: String,
+    password: String,
+}
+
+#[derive(Debug, Deserialize)]
+struct Settings {
+    auth: AuthConfig,
+}
 
 fn is_wsol(mint_address_bytes: &[u8]) -> bool {
     let mint_address_base58 = bs58::encode(mint_address_bytes).into_string();
@@ -18,14 +31,22 @@ fn is_wsol(mint_address_bytes: &[u8]) -> bool {
 async fn main() -> KafkaResult<()> {
     env_logger::init();
 
+    // Load config from config.toml
+    let settings = Config::builder()
+        .add_source(config::File::with_name("config"))
+        .build()
+        .unwrap();
+
+    let settings: Settings = settings.try_deserialize().unwrap();
+
     let consumer: StreamConsumer = ClientConfig::new()
         .set("bootstrap.servers", "rpk0.bitquery.io:9092,rpk1.bitquery.io:9092,rpk2.bitquery.io:9092")
         .set("security.protocol", "SASL_PLAINTEXT")
         .set("ssl.endpoint.identification.algorithm", "none")
         .set("sasl.mechanisms", "SCRAM-SHA-512")
-        .set("sasl.username", "usernamee")
-        .set("sasl.password", "pwww")
-        .set("group.id", "usernammme-group-11")
+        .set("sasl.username", &settings.auth.username)
+        .set("sasl.password", &settings.auth.password)
+        .set("group.id", "solana_105-group-11")
         .set("fetch.message.max.bytes", "10485760")
         .create()?;
 
@@ -42,7 +63,6 @@ async fn main() -> KafkaResult<()> {
             Ok(msg_result) => match msg_result {
                 Ok(msg) => {
                     if let Some(payload) = msg.payload() {
-                        // println!("Raw Proto Data => {:?}", payload);
                         match DexParsedBlockMessage::decode(payload) {
                             Ok(parsed_block) => {
                                 for dex_tx in &parsed_block.transactions {
@@ -99,9 +119,7 @@ async fn main() -> KafkaResult<()> {
                                                             );
                                                             println!("Updated last SOL price in USDC => {:?}", last_sol_price_in_usdc);
                                                         }
-                                                    } 
-                                                    // Fix applied: Removed unnecessary parentheses
-                                                    else if buy_is_sol || sell_is_sol {
+                                                    } else if buy_is_sol || sell_is_sol {
                                                         if let Some(sol_price) = last_sol_price_in_usdc {
                                                             let token_in_sol = if buy_is_sol {
                                                                 buy_amount / sell_amount

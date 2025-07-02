@@ -21,7 +21,7 @@ This repository provides a Rust implementation for consuming Solana blockchain d
 
 ## Features
 
-- Connects to Bitquery's Kafka streaming service with SASL_SSL authentication
+- Connects to Bitquery's Kafka streaming service with SASL_PLAINTEXT authentication
 - Consumes Solana DEX trade events in real-time
 - Parses Protobuf-encoded blockchain data
 - Calculates token prices in USDC
@@ -31,10 +31,6 @@ This repository provides a Rust implementation for consuming Solana blockchain d
 ## Prerequisites
 
 - Rust and Cargo installed
-- SSL certificates for Kafka authentication:
-    - `client.cer.pem`
-    - `client.key.pem`
-    - `server.cer.pem`
 - Bitquery API credentials
 
 ## Setup
@@ -49,7 +45,7 @@ cd bitquery-kafka-solana
 
 3. Update the Kafka configuration in `src/main.rs` with your Bitquery credentials:
 ```rust
-.set("bootstrap.servers", "rpk0.bitquery.io:9093,rpk1.bitquery.io:9093,rpk2.bitquery.io:9093")
+.set("bootstrap.servers", "rpk0.bitquery.io:9092,rpk1.bitquery.io:9092,rpk2.bitquery.io:9092")
 .set("sasl.username", "YOUR_USERNAME")
 .set("sasl.password", "YOUR_PASSWORD")
 .set("group.id", "YOUR_GROUP_ID")

@@ -19,12 +19,8 @@ async fn main() -> KafkaResult<()> {
     env_logger::init();
 
     let consumer: StreamConsumer = ClientConfig::new()
-        .set("bootstrap.servers", "rpk0.bitquery.io:9093,rpk1.bitquery.io:9093,rpk2.bitquery.io:9093")
-        .set("security.protocol", "SASL_SSL")
-        .set("ssl.certificate.location", "client.cer.pem")
-        .set("ssl.key.location", "client.key.pem")
-        .set("ssl.key.password", "")
-        .set("ssl.ca.location", "server.cer.pem")
+        .set("bootstrap.servers", "rpk0.bitquery.io:9092,rpk1.bitquery.io:9092,rpk2.bitquery.io:9092")
+        .set("security.protocol", "SASL_PLAINTEXT")
         .set("ssl.endpoint.identification.algorithm", "none")
         .set("sasl.mechanisms", "SCRAM-SHA-512")
         .set("sasl.username", "usernamee")

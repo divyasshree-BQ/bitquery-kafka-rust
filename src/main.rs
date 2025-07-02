@@ -46,7 +46,7 @@ async fn main() -> KafkaResult<()> {
         .set("sasl.mechanisms", "SCRAM-SHA-512")
         .set("sasl.username", &settings.auth.username)
         .set("sasl.password", &settings.auth.password)
-        .set("group.id", "solana_105-group-11")
+        .set("group.id", &format!("{}-group-11", settings.auth.username))
         .set("fetch.message.max.bytes", "10485760")
         .create()?;
 

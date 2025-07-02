@@ -2,6 +2,7 @@ syntax = "proto3";
 package solana_messages;
 
 import "solana/block_message.proto";
+import "solana/parsed_idl_block_message.proto";
 
 message TokenCreator {
   bytes Address = 1;
@@ -11,7 +12,7 @@ message TokenCreator {
 
 message Currency {
   string Name = 1;
-  uint32  Decimals = 2;
+  uint32 Decimals = 2;
   string Uri = 3;
   string Symbol = 4;
 
@@ -35,7 +36,8 @@ message Currency {
   bool IsMutable = 19;
 
   repeated TokenCreator TokenCreators = 20;
-  uint64 Supply = 21;
+  bytes FreezeAuthority = 21;
+  bytes MintAuthority = 22;
 }
 
 
@@ -54,12 +56,16 @@ message Transfer {
   Account Authority = 5;
 
   Currency Currency = 6;
+
+  ParsedIdlInstruction Instruction = 7;
 }
 
 message InstructionBalanceUpdate {
   uint32 InstructionIndex = 1;
   repeated CurrencyBalanceUpdate TotalCurrencyBalanceUpdates = 2;
   repeated CurrencyBalanceUpdate OwnCurrencyBalanceUpdates = 3;
+  repeated CurrencyBalanceUpdate TokenSupplyUpdates = 4;
+  ParsedIdlInstruction Instruction = 5;
 }
 
 message ParsedTokenTransaction {
